@@ -1,22 +1,13 @@
 package com.nasa.marsroverproblem;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
 public class MarsroverproblemController {
 
     private MarsRover marsRover;
-
-    @RequestMapping("/")
-    public @ResponseBody
-    String greeting() {
-        return "Hello World";
-    }
 
     @RequestMapping("/newPlateau")
     public @ResponseBody
@@ -25,28 +16,18 @@ public class MarsroverproblemController {
     }
 
 
-    @RequestMapping(value = "/deployMarsRover", produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "deployMarsRover", produces = "application/json; charset=utf-8", method = RequestMethod.GET)
     public @ResponseBody
-    MarsRover newMarsRover() {
-        marsRover = new MarsRover("N", 0, 0);
+    MarsRover newMarsRover(@RequestParam("dir") String direction, @RequestParam("posx") int positionX, @RequestParam("posy") int positionY) {
+        marsRover = MarsRover.with(direction, positionX, positionY);
         return marsRover;
     }
 
     @RequestMapping(value = "command/{stringOfCommands}", method = RequestMethod.POST)
-    public void takeCommands(@PathVariable("stringOfCommands") String commands) {
+    public @ResponseBody 
+    String takeCommands(@PathVariable("stringOfCommands") String commands) {
         System.out.println(commands);
-    }
-
-    @RequestMapping(value = "roverModifyDirection/{newDirection}", method = RequestMethod.PUT)
-    public void modifyRoverDirection(@PathVariable("newDirection") String direction) {
-        marsRover.setDirection(direction);
-    }
-
-    @RequestMapping("/getMarsRoverLocation")
-    public @ResponseBody
-    String getMarsRoverLocation() {
-        String marsRoverLocation = marsRover.getPositionX() + " " + marsRover.getPositionY() + " " + marsRover.getDirection();
-        return marsRoverLocation;
+        return marsRover.move(commands);
     }
 
 }

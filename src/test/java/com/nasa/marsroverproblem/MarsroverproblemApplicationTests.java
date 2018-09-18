@@ -21,14 +21,6 @@ public class MarsroverproblemApplicationTests {
     private MockMvc mockMvc;
 
     @Test
-    public void shouldReturnDefaultMessage() throws Exception {
-        this.mockMvc.perform(get("/"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello World")));
-    }
-
-    @Test
     public void shouldReturnANewPlateau() throws Exception {
         this.mockMvc.perform(get("/newPlateau"))
                 .andDo(print())
@@ -38,7 +30,7 @@ public class MarsroverproblemApplicationTests {
 
     @Test
     public void shouldReturnANewMarsRoverDeployedWithPositionAndDirection() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover"))
+        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=0&posy=0"))
                 .andDo(print())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
@@ -56,17 +48,12 @@ public class MarsroverproblemApplicationTests {
     }
 
     @Test
-    public void shouldBeAbleToModifyRoverDirection() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover"))
+    public void shouldBeAbleToModifyRoverDirectionAndReturnItsFinalPosition() throws Exception {
+        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=2"))
                 .andDo(print());
 
-        this.mockMvc.perform(put("/roverModifyDirection/S"))
+        this.mockMvc.perform(post("/LMLMLMLMM"))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        this.mockMvc.perform(get("/getMarsRoverLocation"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("0 0 S")));
     }
 }
