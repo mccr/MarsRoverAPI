@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 public class MarsroverproblemController {
 
     private MarsRover marsRover;
+    private Plateau plateau;
 
     @RequestMapping("/newPlateau")
     public @ResponseBody
     String newPlateau() {
-        return "New Plateau";
+        plateau = Plateau.with(5,5);
+        return "New Plateau with "+ plateau.getSize() +" Grid created";
     }
 
 

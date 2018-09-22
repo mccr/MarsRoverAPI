@@ -25,7 +25,7 @@ public class MarsroverproblemApplicationTests {
         this.mockMvc.perform(get("/newPlateau"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("New Plateau")));
+                .andExpect(content().string(containsString("New Plateau with 5x5 Grid created")));
     }
 
     @Test
@@ -40,20 +40,13 @@ public class MarsroverproblemApplicationTests {
     }
 
     @Test
-    public void shouldReceiveAStringOfCommands() throws Exception {
-        String command = "LMLMLMLMM";
-        this.mockMvc.perform(post("/command/" + command))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void shouldBeAbleToModifyRoverDirectionAndReturnItsFinalPosition() throws Exception {
+    public void shouldBeAbleToReceiveCommandsAndReturnRoversFinalPosition() throws Exception {
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=2"))
                 .andDo(print());
 
-        this.mockMvc.perform(post("/LMLMLMLMM"))
+        this.mockMvc.perform(post("/command/LMLMLMLMM"))
                 .andDo(print())
+                .andExpect(content().string(containsString("N 1 3")))
                 .andExpect(status().isOk());
     }
 }

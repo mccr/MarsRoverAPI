@@ -38,7 +38,7 @@ public class MarsRoverTest {
 
     @Test
     public void shouldBeAbleToMoveForward() {
-        assertEquals("N 1 0", marsRover.move("M"));
+        assertEquals("N 0 1", marsRover.move("M"));
     }
 
     @Test
