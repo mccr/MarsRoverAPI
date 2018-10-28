@@ -1,18 +1,14 @@
 package com.nasa.marsroverproblem;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-import java.util.ArrayList;
-
-@EqualsAndHashCode
-@ToString
-@Setter
-@Getter
+@Data
 @AllArgsConstructor(staticName = "with")
 class MarsRover {
     private String direction;
-    private int positionX;
-    private int positionY;
+    private Long positionX;
+    private Long positionY;
 
     public String move(String commands) {
         String[] commandsParse = commands.split("");
@@ -52,6 +48,22 @@ class MarsRover {
             case "W":
                 setPositionX(this.positionX-1);
                 break;
+        }
+    }
+
+    public void setPositionX(Long positionX) {
+        if (positionX > 5 || positionX < 0) {
+            throw new RuntimeException("you fall off");
+        } else {
+            this.positionX = positionX;
+        }
+    }
+
+    public void setPositionY(Long positionY) {
+        if (positionY > 5 || positionY < 0) {
+            throw new RuntimeException("you fall off");
+        } else {
+            this.positionY = positionY;
         }
     }
 

@@ -1,35 +1,35 @@
 package com.nasa.marsroverproblem;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@Controller
+@RestController
 public class MarsroverproblemController {
 
     private MarsRover marsRover;
-    private Plateau plateau;
+    private GroundControl groundControl = new GroundControl();
 
-    @RequestMapping("/newPlateau")
-    public @ResponseBody
-    String newPlateau() {
-        plateau = Plateau.with(5,5);
-        return "New Plateau with "+ plateau.getSize() +" Grid created";
+    @GetMapping("/newPlateau")
+    public String newPlateau(@RequestParam("size") Long size) {
+        String gridSizeCreated = groundControl.createNewPlateau(size);
+        return "New Plateau with " + gridSizeCreated +"x"+ gridSizeCreated + " Grid created";
     }
 
 
-    @RequestMapping(value = "deployMarsRover", produces = "application/json; charset=utf-8", method = RequestMethod.GET)
-    public @ResponseBody
-    MarsRover newMarsRover(@RequestParam("dir") String direction, @RequestParam("posx") int positionX, @RequestParam("posy") int positionY) {
-        marsRover = MarsRover.with(direction, positionX, positionY);
-        return marsRover;
+    @GetMapping(value = "deployMarsRover", produces = "application/json; charset=utf-8")
+    public MarsRover newMarsRover(@RequestParam("dir") String direction, @RequestParam("posx") Long positionX, @RequestParam("posy") Long positionY) {
+        return groundControl.deployMarsRover(direction, positionX, positionY);
     }
 
-    @RequestMapping(value = "command/{stringOfCommands}", method = RequestMethod.POST)
-    public @ResponseBody 
-    String takeCommands(@PathVariable("stringOfCommands") String commands) {
-        System.out.println(commands);
-        return marsRover.move(commands);
+    @PostMapping(value = "command/{stringOfCommands}")
+    public ResponseEntity<String> takeCommands(@PathVariable("stringOfCommands") String commands) {
+        try {
+            return ResponseEntity.ok().body(groundControl.processCommands(commands));
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("you fall off");
+        }
     }
 
 }

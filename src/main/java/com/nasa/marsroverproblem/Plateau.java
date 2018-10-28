@@ -2,16 +2,8 @@ package com.nasa.marsroverproblem;
 
 import lombok.*;
 
-@EqualsAndHashCode
-@ToString
-@Setter
-@Getter
-@AllArgsConstructor(staticName = "with")
+@Data
+@AllArgsConstructor
 class Plateau {
-    private final int axisX;
-    private final int axisY;
-
-    public String getSize() {
-        return getAxisX() +"x"+ getAxisY();
-    }
+    private final Long size;
 }
