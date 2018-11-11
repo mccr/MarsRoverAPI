@@ -30,14 +30,21 @@ public class MarsroverproblemControllerTests {
     }
 
     @Test
-    public void shouldReturnANewMarsRoverDeployedWithPositionAndDirection() throws Exception {
+    public void shouldReturnAMessageOfDeploySuccessWithPosition() throws Exception {
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=0&posy=0"))
                 .andDo(print())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("direction").value("N"))
-                .andExpect(jsonPath("positionX").value(0))
-                .andExpect(jsonPath("positionY").value(0));
+                .andExpect(content().string(containsString("New Mars Rover deployed in N 0 0")));
+    }
+
+    @Test
+    public void shouldReturnAnExceptionWhenTryingToDeployOutsideGrid() throws Exception {
+        this.mockMvc.perform(get("/newPlateau?size=5"));
+
+        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=6"))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("cannot deploy outside the grid boundaries")));
     }
 
     @Test

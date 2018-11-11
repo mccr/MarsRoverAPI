@@ -11,9 +11,13 @@ public class GroundControl {
         return plateau.getSize().toString();
     }
 
-    public MarsRover deployMarsRover(String direction, Long positionX, Long positionY) {
-        marsRover = MarsRover.with(direction, positionX, positionY);
-        return marsRover;
+    public String deployMarsRover(String direction, Long positionX, Long positionY) {
+        if ((positionX >= 0) && (positionX <= plateau.getSize()) && (positionY >= 0) && (positionY <= plateau.getSize())) {
+            marsRover = MarsRover.with(direction, positionX, positionY);
+        } else {
+            throw new RuntimeException("cannot deploy outside the grid boundaries");
+        }
+        return "New Mars Rover deployed in " + marsRover.getCurrentPosition();
     }
 
     public String processCommands(String commands) {

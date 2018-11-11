@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GroundControlTest {
     private GroundControl groundControl = new GroundControl();
@@ -16,12 +17,21 @@ public class GroundControlTest {
     }
 
     @Test
-    void shouldDeployANewMarsRoverAndReturnTheObject() {
-        MarsRover deployedMarsRover = groundControl.deployMarsRover("N",0L,5L);
+    void shouldDeployANewMarsRoverAndReturnASuccessMessage() {
+        groundControl.createNewPlateau(10L);
+        
+        String deployedMarsRover = groundControl.deployMarsRover("N",0L,5L);
 
-        assertEquals("N", deployedMarsRover.getDirection());
-        assertThat(deployedMarsRover.getPositionX(), is(0L));
-        assertThat(deployedMarsRover.getPositionY(), is(5L));
+        assertEquals("New Mars Rover deployed in N 0 5", deployedMarsRover);
+    }
+
+    @Test
+    void shouldThrowExceptionIfTryingToDeployOutsideBoundaries() {
+        groundControl.createNewPlateau(5L);
+
+        Throwable exception = assertThrows(RuntimeException.class, () -> groundControl.deployMarsRover("N",0L,6L));
+
+        assertEquals("cannot deploy outside the grid boundaries", exception.getMessage());
     }
 
     @Test
@@ -32,5 +42,14 @@ public class GroundControlTest {
         String finalMarsRoverPosition = groundControl.processCommands("M");
 
         assertThat(finalMarsRoverPosition, is("N 1 3"));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenRoverIsOutOfBoundaries() {
+        groundControl.createNewPlateau(5L);
+        groundControl.deployMarsRover("N", 1L, 5L);
+
+        Throwable exception = assertThrows(RuntimeException.class, () -> groundControl.processCommands("M"));
+        assertEquals("you fall off", exception.getMessage());
     }
 }

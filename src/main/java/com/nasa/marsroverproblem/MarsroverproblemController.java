@@ -18,8 +18,12 @@ public class MarsroverproblemController {
 
 
     @GetMapping(value = "deployMarsRover", produces = "application/json; charset=utf-8")
-    public MarsRover newMarsRover(@RequestParam("dir") String direction, @RequestParam("posx") Long positionX, @RequestParam("posy") Long positionY) {
-        return groundControl.deployMarsRover(direction, positionX, positionY);
+    public ResponseEntity<String> newMarsRover(@RequestParam("dir") String direction, @RequestParam("posx") Long positionX, @RequestParam("posy") Long positionY) {
+        try {
+            return ResponseEntity.ok().body(groundControl.deployMarsRover(direction, positionX, positionY));
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
     }
 
     @PostMapping(value = "command/{stringOfCommands}")
@@ -27,7 +31,7 @@ public class MarsroverproblemController {
         try {
             return ResponseEntity.ok().body(groundControl.processCommands(commands));
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("you fall off");
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(exception.getMessage());
         }
     }
 
