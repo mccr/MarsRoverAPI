@@ -66,6 +66,6 @@ public class MarsroverproblemControllerTests {
         this.mockMvc.perform(post("/command/MM"))
                 .andDo(print())
                 .andExpect(status().isIAmATeapot())
-                .andExpect(content().string(containsString("you fall off")));
+                .andExpect(content().string(containsString("cannot move forward")));
     }
 }

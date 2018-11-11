@@ -2,7 +2,7 @@ package com.nasa.marsroverproblem;
 
 public class GroundControl {
 
-    public static final String YOU_FALL_OFF = "you fall off";
+    public static final String CANNOT_MOVE_FORWARD = "cannot move forward";
     private Plateau plateau;
     private MarsRover marsRover;
 
@@ -39,22 +39,22 @@ public class GroundControl {
         switch (marsRover.getDirection()) {
             case "N":
                 targetPosition = marsRover.getPositionY() + 1;
-                if (targetPosition > plateau.getSize()) throw new RuntimeException(YOU_FALL_OFF);
+                if (targetPosition > plateau.getSize()) throw new RuntimeException(CANNOT_MOVE_FORWARD);
                 else marsRover.move("M");
                 break;
             case "E":
                 targetPosition = marsRover.getPositionX() + 1;
-                if (targetPosition > plateau.getSize()) throw new RuntimeException(YOU_FALL_OFF);
+                if (targetPosition > plateau.getSize()) throw new RuntimeException(CANNOT_MOVE_FORWARD);
                 else marsRover.move("M");
                 break;
             case "S":
                 targetPosition = marsRover.getPositionY() - 1;
-                if (targetPosition < 0) throw new RuntimeException(YOU_FALL_OFF);
+                if (targetPosition < 0) throw new RuntimeException(CANNOT_MOVE_FORWARD);
                 else marsRover.move("M");
                 break;
             case "W":
                 targetPosition = marsRover.getPositionX() - 1;
-                if (targetPosition < 0) throw new RuntimeException(YOU_FALL_OFF);
+                if (targetPosition < 0) throw new RuntimeException(CANNOT_MOVE_FORWARD);
                 else marsRover.move("M");
                 break;
         }

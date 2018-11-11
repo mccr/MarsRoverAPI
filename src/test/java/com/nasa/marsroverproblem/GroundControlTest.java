@@ -19,7 +19,7 @@ public class GroundControlTest {
     @Test
     void shouldDeployANewMarsRoverAndReturnASuccessMessage() {
         groundControl.createNewPlateau(10L);
-        
+
         String deployedMarsRover = groundControl.deployMarsRover("N",0L,5L);
 
         assertEquals("New Mars Rover deployed in N 0 5", deployedMarsRover);
@@ -50,6 +50,6 @@ public class GroundControlTest {
         groundControl.deployMarsRover("N", 1L, 5L);
 
         Throwable exception = assertThrows(RuntimeException.class, () -> groundControl.processCommands("M"));
-        assertEquals("you fall off", exception.getMessage());
+        assertEquals("cannot move forward", exception.getMessage());
     }
 }
