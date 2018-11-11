@@ -10,60 +10,38 @@ class MarsRover {
     private Long positionX;
     private Long positionY;
 
-    public String move(String commands) {
-        String[] commandsParse = commands.split("");
-
-        for (String command : commandsParse) {
-            switch (command) {
-                case "L":
-                    moveLeft();
-                    break;
-                case "R":
-                    moveRight();
-                    break;
-                default:
-                    moveForward();
-                    break;
-            }
+    public void move(String command) {
+        switch (command) {
+            case "L":
+                moveLeft();
+                break;
+            case "R":
+                moveRight();
+                break;
+            case "M":
+                moveForward();
+                break;
         }
-
-        return getCurrentPosition();
     }
 
-    private String getCurrentPosition() {
-        return getDirection() +" "+ getPositionX() +" "+ getPositionY();
+    public String getCurrentPosition() {
+        return getDirection() + " " + getPositionX() + " " + getPositionY();
     }
 
     private void moveForward() {
         switch (this.direction) {
             case "N":
-                setPositionY(this.positionY+1);
+                setPositionY(this.positionY + 1);
                 break;
             case "E":
-                setPositionX(this.positionX+1);
+                setPositionX(this.positionX + 1);
                 break;
             case "S":
-                setPositionY(this.positionY-1);
+                setPositionY(this.positionY - 1);
                 break;
             case "W":
-                setPositionX(this.positionX-1);
+                setPositionX(this.positionX - 1);
                 break;
-        }
-    }
-
-    public void setPositionX(Long positionX) {
-        if (positionX > 5 || positionX < 0) {
-            throw new RuntimeException("you fall off");
-        } else {
-            this.positionX = positionX;
-        }
-    }
-
-    public void setPositionY(Long positionY) {
-        if (positionY > 5 || positionY < 0) {
-            throw new RuntimeException("you fall off");
-        } else {
-            this.positionY = positionY;
         }
     }
 

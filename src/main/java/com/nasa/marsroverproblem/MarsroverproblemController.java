@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class MarsroverproblemController {
 
-    private MarsRover marsRover;
     private GroundControl groundControl = new GroundControl();
 
     @GetMapping("/newPlateau")
