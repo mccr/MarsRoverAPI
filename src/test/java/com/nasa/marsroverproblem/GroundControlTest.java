@@ -1,5 +1,6 @@
 package com.nasa.marsroverproblem;
 
+import com.nasa.marsroverproblem.exceptions.RoverDontWantToDieException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +50,7 @@ public class GroundControlTest {
         groundControl.createNewPlateau(5L);
         groundControl.deployMarsRover("N", 1L, 5L);
 
-        Throwable exception = assertThrows(RuntimeException.class, () -> groundControl.processCommands("M"));
-        assertEquals("cannot move forward", exception.getMessage());
+        Throwable exception = assertThrows(RoverDontWantToDieException.class, () -> groundControl.processCommands("M"));
+        assertEquals("cannot move forward and last position is: N 1 5", exception.getMessage());
     }
 }

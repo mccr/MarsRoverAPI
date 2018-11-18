@@ -49,6 +49,8 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldBeAbleToReceiveCommandsAndReturnRoversFinalPosition() throws Exception {
+        this.mockMvc.perform(get("/newPlateau?size=5"));
+
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=2"));
 
         this.mockMvc.perform(post("/command/LMLMLMLMM"))
@@ -58,7 +60,7 @@ public class MarsroverproblemControllerTests {
     }
 
     @Test
-    public void shouldReturnErrorMessageIfRoverFallsOffThePlateau() throws Exception {
+    public void shouldReturnErrorMessageAndRoverLastPositionIfRoverCannotMoveForwardInThePlateau() throws Exception {
         this.mockMvc.perform(get("/newPlateau?size=5"));
 
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=4"));
@@ -66,6 +68,6 @@ public class MarsroverproblemControllerTests {
         this.mockMvc.perform(post("/command/MM"))
                 .andDo(print())
                 .andExpect(status().isIAmATeapot())
-                .andExpect(content().string(containsString("cannot move forward")));
+                .andExpect(content().string(containsString("cannot move forward and last position is: N 1 5")));
     }
 }

@@ -1,8 +1,9 @@
 package com.nasa.marsroverproblem;
 
+import com.nasa.marsroverproblem.exceptions.RoverDontWantToDieException;
+
 public class GroundControl {
 
-    public static final String CANNOT_MOVE_FORWARD = "cannot move forward";
     private Plateau plateau;
     private MarsRover marsRover;
 
@@ -35,26 +36,27 @@ public class GroundControl {
 
     public void checkBoundaries() {
         Long targetPosition;
+        String message = "cannot move forward and last position is: "+ marsRover.getCurrentPosition();
 
         switch (marsRover.getDirection()) {
             case "N":
                 targetPosition = marsRover.getPositionY() + 1;
-                if (targetPosition > plateau.getSize()) throw new RuntimeException(CANNOT_MOVE_FORWARD);
+                if (targetPosition > plateau.getSize()) throw new RoverDontWantToDieException(message);
                 else marsRover.move("M");
                 break;
             case "E":
                 targetPosition = marsRover.getPositionX() + 1;
-                if (targetPosition > plateau.getSize()) throw new RuntimeException(CANNOT_MOVE_FORWARD);
+                if (targetPosition > plateau.getSize()) throw new RoverDontWantToDieException(message);
                 else marsRover.move("M");
                 break;
             case "S":
                 targetPosition = marsRover.getPositionY() - 1;
-                if (targetPosition < 0) throw new RuntimeException(CANNOT_MOVE_FORWARD);
+                if (targetPosition < 0) throw new RoverDontWantToDieException(message);
                 else marsRover.move("M");
                 break;
             case "W":
                 targetPosition = marsRover.getPositionX() - 1;
-                if (targetPosition < 0) throw new RuntimeException(CANNOT_MOVE_FORWARD);
+                if (targetPosition < 0) throw new RoverDontWantToDieException(message);
                 else marsRover.move("M");
                 break;
         }
