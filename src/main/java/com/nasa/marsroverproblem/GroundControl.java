@@ -1,9 +1,11 @@
 package com.nasa.marsroverproblem;
 
+import com.nasa.marsroverproblem.exceptions.CannotDeployOutOfBoundariesException;
 import com.nasa.marsroverproblem.exceptions.RoverDontWantToDieException;
 
 public class GroundControl {
 
+    private static final String CANNOT_DEPLOY_OUTSIDE_THE_GRID_BOUNDARIES = "cannot deploy outside the grid boundaries";
     private Plateau plateau;
     private MarsRover marsRover;
 
@@ -13,11 +15,12 @@ public class GroundControl {
     }
 
     public String deployMarsRover(String direction, Long positionX, Long positionY) {
-        if ((positionX >= 0) && (positionX <= plateau.getSize()) && (positionY >= 0) && (positionY <= plateau.getSize())) {
+
+        if (checkDeployBoundaries(positionX, positionY))
+            throw new CannotDeployOutOfBoundariesException(CANNOT_DEPLOY_OUTSIDE_THE_GRID_BOUNDARIES);
+        else
             marsRover = MarsRover.with(direction, positionX, positionY);
-        } else {
-            throw new RuntimeException("cannot deploy outside the grid boundaries");
-        }
+
         return "New Mars Rover deployed in " + marsRover.getCurrentPosition();
     }
 
@@ -25,40 +28,43 @@ public class GroundControl {
         String[] commandsParse = commands.split("");
 
         for (String command : commandsParse) {
-            if (command.matches("M")) {
-                checkBoundaries();
-            } else {
-                marsRover.move(command);
-            }
+            if (command.matches("M")) checkBoundaries();
+            else marsRover.move(command);
         }
         return marsRover.getCurrentPosition();
     }
 
     public void checkBoundaries() {
         Long targetPosition;
-        String message = "cannot move forward and last position is: "+ marsRover.getCurrentPosition();
 
         switch (marsRover.getDirection()) {
             case "N":
                 targetPosition = marsRover.getPositionY() + 1;
-                if (targetPosition > plateau.getSize()) throw new RoverDontWantToDieException(message);
-                else marsRover.move("M");
+                moveMarsRover(targetPosition > plateau.getSize());
                 break;
             case "E":
                 targetPosition = marsRover.getPositionX() + 1;
-                if (targetPosition > plateau.getSize()) throw new RoverDontWantToDieException(message);
-                else marsRover.move("M");
+                moveMarsRover(targetPosition > plateau.getSize());
                 break;
             case "S":
                 targetPosition = marsRover.getPositionY() - 1;
-                if (targetPosition < 0) throw new RoverDontWantToDieException(message);
-                else marsRover.move("M");
+                moveMarsRover(targetPosition < 0);
                 break;
             case "W":
                 targetPosition = marsRover.getPositionX() - 1;
-                if (targetPosition < 0) throw new RoverDontWantToDieException(message);
-                else marsRover.move("M");
+                moveMarsRover(targetPosition < 0);
                 break;
         }
+    }
+
+    private void moveMarsRover(Boolean marsRoverCondition) {
+        String message = "cannot move forward and last position is: "+ marsRover.getCurrentPosition();
+
+        if (marsRoverCondition) throw new RoverDontWantToDieException(message);
+        else marsRover.move("M");
+    }
+
+    private Boolean checkDeployBoundaries(Long positionX, Long positionY) {
+        return (positionX < 0) || (positionX > plateau.getSize()) || (positionY < 0) || (positionY > plateau.getSize());
     }
 }
