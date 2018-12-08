@@ -18,21 +18,21 @@ public class GroundControlTest {
     }
 
     @Test
-    void shouldDeployANewMarsRoverAndReturnASuccessMessage() {
+    void shouldDeployANewMarsRoverAndReturnTrue() {
         groundControl.createNewPlateau(10L);
 
-        String deployedMarsRover = groundControl.deployMarsRover("N",0L,5L);
+        Boolean deployedMarsRover = groundControl.deployMarsRover("N",0L,5L);
 
-        assertEquals("New Mars Rover deployed in N 0 5", deployedMarsRover);
+        assertEquals(true, deployedMarsRover);
     }
 
     @Test
-    void shouldThrowExceptionIfTryingToDeployOutsideBoundaries() {
+    void shouldReturnFalseIfTryingToDeployOutsideBoundaries() {
         groundControl.createNewPlateau(5L);
 
-        Throwable exception = assertThrows(RuntimeException.class, () -> groundControl.deployMarsRover("N",0L,6L));
+        Boolean isDeployed = groundControl.deployMarsRover("N",0L,6L);
 
-        assertEquals("cannot deploy outside the grid boundaries", exception.getMessage());
+        assertEquals(false, isDeployed);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.nasa.marsroverproblem;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,17 @@ public class MarsroverproblemControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeEach
+    void setUp() throws Exception {
+        this.mockMvc.perform(get("/newPlateau?size=5"));
+    }
+
     @Test
     public void shouldReturnANewPlateau() throws Exception {
-        this.mockMvc.perform(get("/newPlateau?size=5"))
+        this.mockMvc.perform(get("/newPlateau?size=10"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("New Plateau with 5x5 Grid created")));
+                .andExpect(content().string(containsString("New Plateau with 10x10 Grid created")));
     }
 
     @Test
@@ -39,8 +45,6 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnAnExceptionWhenTryingToDeployOutsideGrid() throws Exception {
-        this.mockMvc.perform(get("/newPlateau?size=5"));
-
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=6"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -49,8 +53,6 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldBeAbleToReceiveCommandsAndReturnRoversFinalPosition() throws Exception {
-        this.mockMvc.perform(get("/newPlateau?size=5"));
-
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=2"));
 
         this.mockMvc.perform(post("/command/LMLMLMLMM"))
@@ -61,8 +63,6 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnErrorMessageAndRoverLastPositionIfRoverCannotMoveForwardInThePlateau() throws Exception {
-        this.mockMvc.perform(get("/newPlateau?size=5"));
-
         this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=4"));
 
         this.mockMvc.perform(post("/command/MM"))

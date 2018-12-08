@@ -1,11 +1,8 @@
 package com.nasa.marsroverproblem;
 
-import com.nasa.marsroverproblem.exceptions.CannotDeployOutOfBoundariesException;
 import com.nasa.marsroverproblem.exceptions.RoverDontWantToDieException;
 
 public class GroundControl {
-
-    private static final String CANNOT_DEPLOY_OUTSIDE_THE_GRID_BOUNDARIES = "cannot deploy outside the grid boundaries";
     private Plateau plateau;
     private MarsRover marsRover;
 
@@ -14,14 +11,14 @@ public class GroundControl {
         return plateau.getSize().toString();
     }
 
-    public String deployMarsRover(String direction, Long positionX, Long positionY) {
+    public Boolean deployMarsRover(String direction, Long positionX, Long positionY) {
+        Boolean isDeployed = false;
 
-        if (checkDeployBoundaries(positionX, positionY))
-            throw new CannotDeployOutOfBoundariesException(CANNOT_DEPLOY_OUTSIDE_THE_GRID_BOUNDARIES);
-        else
+        if (!isOutOfBoundaries(positionX, positionY)) {
             marsRover = MarsRover.with(direction, positionX, positionY);
-
-        return "New Mars Rover deployed in " + marsRover.getCurrentPosition();
+            isDeployed = true;
+        }
+        return isDeployed;
     }
 
     public String processCommands(String commands) {
@@ -64,7 +61,7 @@ public class GroundControl {
         else marsRover.move("M");
     }
 
-    private Boolean checkDeployBoundaries(Long positionX, Long positionY) {
+    private Boolean isOutOfBoundaries(Long positionX, Long positionY) {
         return (positionX < 0) || (positionX > plateau.getSize()) || (positionY < 0) || (positionY > plateau.getSize());
     }
 }
