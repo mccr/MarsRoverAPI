@@ -1,7 +1,6 @@
-CREATE TABLE marsrover (
-  id int NOT NULL,
-  direction varchar(255) NOT NULL,
-  positionx int NOT NULL,
-  positiony int NOT NULL,
-  PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS marsroverobject (
+  id VARCHAR(255) NOT NULL PRIMARY KEY,
+  direction VARCHAR(255) NOT NULL,
+  positionx INT NOT NULL,
+  positiony INT NOT NULL
 );

@@ -37,15 +37,15 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnAMessageOfDeploySuccessWithPosition() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=0&posy=0"))
+        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=0&posy=0"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("New Mars Rover deployed in N 0 0")));
+                .andExpect(content().string(containsString("New Mars Rover MarsRover1 deployed in N 0 0")));
     }
 
     @Test
     public void shouldReturnAnExceptionWhenTryingToDeployOutsideGrid() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=6"))
+        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=1&posy=6"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("cannot deploy outside the grid boundaries")));
@@ -53,9 +53,9 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldBeAbleToReceiveCommandsAndReturnRoversFinalPosition() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=2"));
+        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover2&dir=N&posx=1&posy=2"));
 
-        this.mockMvc.perform(post("/command/LMLMLMLMM"))
+        this.mockMvc.perform(post("/command/MarsRover2/LMLMLMLMM"))
                 .andDo(print())
                 .andExpect(content().string(containsString("N 1 3")))
                 .andExpect(status().isOk());
@@ -63,7 +63,7 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnErrorMessageAndRoverLastPositionIfRoverCannotMoveForwardInThePlateau() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?dir=N&posx=1&posy=4"));
+        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=1&posy=4"));
 
         this.mockMvc.perform(post("/command/MM"))
                 .andDo(print())

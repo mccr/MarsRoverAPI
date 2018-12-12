@@ -3,6 +3,8 @@ package com.nasa.marsroverproblem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -15,7 +17,7 @@ class MarsRoverTest {
 
     @BeforeEach
     void setUp() {
-        marsRover = MarsRover.with("N", 0L,0L);
+        marsRover = MarsRover.with( UUID.randomUUID().toString(), "MarsRover1", "N", 0L,0L);
     }
 
     @Test
@@ -27,21 +29,21 @@ class MarsRoverTest {
 
     @Test
     void shouldBeAbleToMoveLeft() {
-        marsRover.move("L");
+        GroundControl.move(marsRover, "L");
 
         assertEquals("W 0 0", marsRover.getCurrentPosition());
     }
 
     @Test
     void shouldBeAbleToMoveRight() {
-        marsRover.move("R");
+        GroundControl.move(marsRover, "R");
 
         assertEquals("E 0 0", marsRover.getCurrentPosition());
     }
 
     @Test
     void shouldBeAbleToMoveForward() {
-        marsRover.move("M");
+        GroundControl.move(marsRover, "M");
 
         assertEquals("N 0 1", marsRover.getCurrentPosition());
     }
