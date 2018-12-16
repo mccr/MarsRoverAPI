@@ -22,7 +22,7 @@ public class MarsroverproblemController {
 
     @GetMapping(value = "deployMarsRover", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> newMarsRover(@RequestParam("name") String name, @RequestParam("dir") String direction, @RequestParam("posx") Long positionX, @RequestParam("posy") Long positionY) {
-        ResponseEntity<String> response = ResponseEntity.ok().body(getMarsRoverDeployedSuccessMessage(direction, positionX, positionY));
+        ResponseEntity<String> response = ResponseEntity.ok().body(getMarsRoverDeployedSuccessMessage(name, direction, positionX, positionY));
 
         if (!groundControl.deployMarsRover(name, direction, positionX, positionY)){
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CANNOT_DEPLOY_OUTSIDE_THE_GRID_BOUNDARIES);
@@ -41,7 +41,7 @@ public class MarsroverproblemController {
     }
 
 
-    private String getMarsRoverDeployedSuccessMessage(String direction, Long positionX, Long positionY) {
-        return "New Mars Rover deployed in " + direction +" "+ positionX +" "+ positionY;
+    private String getMarsRoverDeployedSuccessMessage(String name, String direction, Long positionX, Long positionY) {
+        return "New Mars Rover "+ name +" deployed in " + direction +" "+ positionX +" "+ positionY;
     }
 }

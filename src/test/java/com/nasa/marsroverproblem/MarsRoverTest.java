@@ -31,20 +31,20 @@ class MarsRoverTest {
     void shouldBeAbleToMoveLeft() {
         GroundControl.move(marsRover, "L");
 
-        assertEquals("W 0 0", marsRover.getCurrentPosition());
+        assertEquals("W 0 0", GroundControl.getCurrentPosition(marsRover));
     }
 
     @Test
     void shouldBeAbleToMoveRight() {
         GroundControl.move(marsRover, "R");
 
-        assertEquals("E 0 0", marsRover.getCurrentPosition());
+        assertEquals("E 0 0", GroundControl.getCurrentPosition(marsRover));
     }
 
     @Test
     void shouldBeAbleToMoveForward() {
         GroundControl.move(marsRover, "M");
 
-        assertEquals("N 0 1", marsRover.getCurrentPosition());
+        assertEquals("N 0 1", GroundControl.getCurrentPosition(marsRover));
     }
 }

@@ -25,9 +25,4 @@ class MarsRover {
     public Long positionX;
     @Column(name = "positiony")
     public Long positionY;
-
-    public String getCurrentPosition() {
-        return getDirection() + " " + getPositionX() + " " + getPositionY();
-    }
-
 }

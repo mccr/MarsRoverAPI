@@ -80,6 +80,10 @@ public class GroundControl {
         }
     }
 
+    public static String getCurrentPosition(MarsRover marsRover) {
+        return marsRover.getDirection() + " " + marsRover.getPositionX() + " " + marsRover.getPositionY();
+    }
+
     public String createNewPlateau(Long size) {
         plateau = new Plateau(size > 0 ? size : 5);
         return plateau.getSize().toString();
@@ -104,7 +108,7 @@ public class GroundControl {
             if (command.matches("M")) checkBoundaries();
             else move(currentMarsRover.get(), command);
         }
-        return marsRover.getCurrentPosition();
+        return getCurrentPosition(marsRover);
     }
 
     public void checkBoundaries() {
@@ -131,7 +135,7 @@ public class GroundControl {
     }
 
     private void moveMarsRover(Boolean marsRoverCondition) {
-        String message = "cannot move forward and last position is: "+ marsRover.getCurrentPosition();
+        String message = "cannot move forward and last position is: "+ getCurrentPosition(marsRover);
 
         if (marsRoverCondition) throw new RoverDontWantToDieException(message);
         else move(marsRover, "M");

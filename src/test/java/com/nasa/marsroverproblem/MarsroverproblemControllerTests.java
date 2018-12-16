@@ -1,19 +1,22 @@
 package com.nasa.marsroverproblem;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.nasa.marsroverproblem.exceptions.RoverDontWantToDieException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -21,14 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MarsroverproblemControllerTests {
     @Autowired
     private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        this.mockMvc.perform(get("/newPlateau?size=5"));
-    }
+    @MockBean
+    GroundControl groundControl;
 
     @Test
     public void shouldReturnANewPlateau() throws Exception {
+        when(groundControl.createNewPlateau(10L))
+                .thenReturn("New Plateau with 10x10 Grid created");
+
         this.mockMvc.perform(get("/newPlateau?size=10"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -37,6 +40,9 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnAMessageOfDeploySuccessWithPosition() throws Exception {
+        when(groundControl.deployMarsRover("MarsRover1", "N", 0L, 0L))
+                .thenReturn(true);
+
         this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=0&posy=0"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -45,6 +51,9 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnAnExceptionWhenTryingToDeployOutsideGrid() throws Exception {
+        when(groundControl.deployMarsRover("MarsRover1", "N", 0L, 6L))
+                .thenReturn(false);
+
         this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=1&posy=6"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -53,7 +62,8 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldBeAbleToReceiveCommandsAndReturnRoversFinalPosition() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover2&dir=N&posx=1&posy=2"));
+        when(groundControl.processCommands("MarsRover2", "LMLMLMLMM"))
+                .thenReturn("N 1 3");
 
         this.mockMvc.perform(post("/command/MarsRover2/LMLMLMLMM"))
                 .andDo(print())
@@ -63,9 +73,10 @@ public class MarsroverproblemControllerTests {
 
     @Test
     public void shouldReturnErrorMessageAndRoverLastPositionIfRoverCannotMoveForwardInThePlateau() throws Exception {
-        this.mockMvc.perform(get("/deployMarsRover?name=MarsRover1&dir=N&posx=1&posy=4"));
+        when(groundControl.processCommands("MarsRover1", "MM"))
+                .thenThrow(new RoverDontWantToDieException("cannot move forward and last position is: N 1 5"));
 
-        this.mockMvc.perform(post("/command/MM"))
+        this.mockMvc.perform(post("/command/MarsRover1/MM"))
                 .andDo(print())
                 .andExpect(status().isIAmATeapot())
                 .andExpect(content().string(containsString("cannot move forward and last position is: N 1 5")));
