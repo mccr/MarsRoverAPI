@@ -11,7 +11,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GroundControl {
     private Plateau plateau;
-    private MarsRover marsRover;
 
     private final MarsRoverObjectRepository marsRoverObjectRepository;
 
@@ -93,8 +92,8 @@ public class GroundControl {
         Boolean isDeployed = false;
 
         if (!isOutOfBoundaries(positionX, positionY)) {
-            marsRover = MarsRover.with( UUID.randomUUID().toString(), name, direction, positionX, positionY);
-            marsRoverObjectRepository.save(marsRover);
+            MarsRover deployedMarsRover = MarsRover.with( UUID.randomUUID().toString(), name, direction, positionX, positionY);
+            marsRoverObjectRepository.save(deployedMarsRover);
             isDeployed = true;
         }
         return isDeployed;
@@ -105,36 +104,36 @@ public class GroundControl {
 
         Optional<MarsRover> currentMarsRover = marsRoverObjectRepository.findByName(marsRoverName);
         for (String command : commandsParse) {
-            if (command.matches("M")) checkBoundaries();
+            if (command.matches("M")) checkBoundaries(currentMarsRover.get());
             else move(currentMarsRover.get(), command);
         }
-        return getCurrentPosition(marsRover);
+        return getCurrentPosition(currentMarsRover.get());
     }
 
-    public void checkBoundaries() {
+    public void checkBoundaries(MarsRover marsRover) {
         Long targetPosition;
 
         switch (marsRover.getDirection()) {
             case "N":
                 targetPosition = marsRover.getPositionY() + 1;
-                moveMarsRover(targetPosition > plateau.getSize());
+                moveMarsRover(targetPosition > plateau.getSize(), marsRover);
                 break;
             case "E":
                 targetPosition = marsRover.getPositionX() + 1;
-                moveMarsRover(targetPosition > plateau.getSize());
+                moveMarsRover(targetPosition > plateau.getSize(), marsRover);
                 break;
             case "S":
                 targetPosition = marsRover.getPositionY() - 1;
-                moveMarsRover(targetPosition < 0);
+                moveMarsRover(targetPosition < 0, marsRover);
                 break;
             case "W":
                 targetPosition = marsRover.getPositionX() - 1;
-                moveMarsRover(targetPosition < 0);
+                moveMarsRover(targetPosition < 0, marsRover);
                 break;
         }
     }
 
-    private void moveMarsRover(Boolean marsRoverCondition) {
+    private void moveMarsRover(Boolean marsRoverCondition, MarsRover marsRover) {
         String message = "cannot move forward and last position is: "+ getCurrentPosition(marsRover);
 
         if (marsRoverCondition) throw new RoverDontWantToDieException(message);
